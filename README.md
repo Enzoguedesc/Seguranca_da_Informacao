@@ -75,3 +75,6 @@ Sucesso → Salvar sessão em cookies → Redirecionar por role
 - **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Supabase (PostgreSQL + Auth + RLS)
 - **Autenticação**: Supabase Auth (JWT)
+
+
+# [Link](https://enzoguedesc.github.io/Seguranca_da_Informacao)
