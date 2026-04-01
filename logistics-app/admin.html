@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Admin — LogiTrack</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <!-- Admin bar -->
+  <div class="admin-bar">
+    <i class="fas fa-shield-halved"></i>
+    <span>Modo Administrador</span>
+    <span style="margin-left:auto; color:rgba(249,115,22,.6); font-weight:400;">Acesso restrito</span>
+  </div>
+
+  <div class="page-wrap">
+    <div class="dashboard-layout">
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-icon">🚚</div>
+          LogiTrack
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-label">Admin</div>
+          <div class="sidebar-link active" id="nav-overview">
+            <i class="fas fa-gauge-high"></i> Visão geral
+          </div>
+          <div class="sidebar-link" id="nav-users">
+            <i class="fas fa-users"></i> Usuários
+          </div>
+          <div class="sidebar-link" id="nav-logs">
+            <i class="fas fa-list-check"></i> Logs do sistema
+          </div>
+        </div>
+
+        <div class="sidebar-section" style="margin-top:16px;">
+          <div class="sidebar-section-label">Sistema</div>
+          <div class="sidebar-link">
+            <i class="fas fa-gear"></i> Configurações
+          </div>
+        </div>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-user">
+            <div class="sidebar-avatar" id="sidebar-avatar" style="background:linear-gradient(135deg,var(--orange-dim),var(--orange));">A</div>
+            <div class="sidebar-user-info">
+              <div class="sidebar-user-name" id="sidebar-name">Administrador</div>
+              <div class="sidebar-user-role" style="color:var(--orange);">
+                <i class="fas fa-shield-halved" style="font-size:10px;"></i> Admin
+              </div>
+            </div>
+          </div>
+          <button class="sidebar-link w-full" id="logout-btn" style="margin-top:8px; color:var(--danger); border:none; background:none; text-align:left; width:100%; cursor:pointer;">
+            <i class="fas fa-right-from-bracket"></i> Sair da conta
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main-content">
+
+        <!-- ════ OVERVIEW ════ -->
+        <section id="section-overview">
+          <div class="page-header">
+            <div class="page-title">Painel Administrativo</div>
+            <div class="page-subtitle">Gerencie usuários e monitore o sistema</div>
+          </div>
+
+          <div class="stats-grid" id="stats-grid">
+            <div class="stat-card blue">
+              <div class="icon-wrap"><i class="fas fa-users"></i></div>
+              <div class="stat-number" id="stat-total">—</div>
+              <div class="stat-desc">Total de usuários</div>
+            </div>
+            <div class="stat-card green">
+              <div class="icon-wrap"><i class="fas fa-user-plus"></i></div>
+              <div class="stat-number" id="stat-new">—</div>
+              <div class="stat-desc">Novos (30 dias)</div>
+            </div>
+            <div class="stat-card orange">
+              <div class="icon-wrap"><i class="fas fa-shield-halved"></i></div>
+              <div class="stat-number" id="stat-admins">—</div>
+              <div class="stat-desc">Administradores</div>
+            </div>
+            <div class="stat-card purple">
+              <div class="icon-wrap"><i class="fas fa-user"></i></div>
+              <div class="stat-number" id="stat-users">—</div>
+              <div class="stat-desc">Usuários comuns</div>
+            </div>
+          </div>
+
+          <!-- Role distribution bar -->
+          <div class="card" style="margin-bottom:24px;">
+            <div class="card-header">
+              <div class="card-title">Distribuição por função</div>
+            </div>
+            <div style="margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:6px;">
+                <span style="color:var(--blue-light);">Usuários</span>
+                <span id="bar-user-pct">—</span>
+              </div>
+              <div style="background:rgba(255,255,255,.06);border-radius:100px;height:8px;overflow:hidden;">
+                <div id="bar-user" style="height:100%;background:var(--blue);border-radius:100px;transition:width .6s ease;width:0;"></div>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:6px;">
+                <span style="color:var(--orange);">Admins</span>
+                <span id="bar-admin-pct">—</span>
+              </div>
+              <div style="background:rgba(255,255,255,.06);border-radius:100px;height:8px;overflow:hidden;">
+                <div id="bar-admin" style="height:100%;background:var(--orange);border-radius:100px;transition:width .6s ease;width:0;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent users quick view -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Usuários recentes</div>
+              <button class="btn btn-ghost btn-sm" id="go-users-btn">Ver todos</button>
+            </div>
+            <div id="recent-users-list">
+              <div style="display:flex;align-items:center;justify-content:center;padding:30px;">
+                <div class="spinner"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ════ USERS ════ -->
+        <section id="section-users" style="display:none;">
+          <div class="page-header">
+            <div class="page-title">Gerenciar usuários</div>
+            <div class="page-subtitle" id="users-count-label">Carregando...</div>
+          </div>
+
+          <!-- Search -->
+          <div class="search-bar">
+            <div class="search-input-wrap">
+              <i class="fas fa-magnifying-glass"></i>
+              <input type="text" class="search-input" id="search-input" placeholder="Buscar por nome, CPF ou e-mail...">
+            </div>
+            <select id="role-filter" style="background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:var(--radius-md);color:var(--white);font-size:.875rem;padding:10px 16px;cursor:pointer;">
+              <option value="">Todos os papéis</option>
+              <option value="user">Usuários</option>
+              <option value="admin">Admins</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table id="users-table">
+              <thead>
+                <tr>
+                  <th>Usuário</th>
+                  <th>CPF</th>
+                  <th>Nascimento</th>
+                  <th>Papel</th>
+                  <th>Cadastro</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <tr>
+                  <td colspan="6" style="text-align:center;padding:40px;">
+                    <div class="spinner" style="margin:0 auto;"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="pagination" id="pagination">
+              <span class="pagination-info" id="pagination-info"></span>
+              <div class="pagination-btns" id="pagination-btns"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ════ LOGS ════ -->
+        <section id="section-logs" style="display:none;">
+          <div class="page-header">
+            <div class="page-title">Logs do sistema</div>
+            <div class="page-subtitle">Histórico de atividades recentes</div>
+          </div>
+          <div class="card">
+            <div style="display:flex;flex-direction:column;gap:12px;" id="logs-list">
+              <!-- Logs mock -->
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL: Detalhes do usuário -->
+  <div class="modal-backdrop" id="user-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Detalhes do usuário</div>
+        <button class="modal-close" data-close-modal><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.07);">
+          <div id="modal-avatar" style="width:60px;height:60px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0;"></div>
+          <div>
+            <div id="modal-name" style="font-family:var(--font-display);font-size:1.25rem;font-weight:800;"></div>
+            <div id="modal-badge" style="margin-top:6px;"></div>
+          </div>
+        </div>
+
+        <div class="user-detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">CPF</span>
+            <span class="detail-value" id="modal-cpf"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">E-mail</span>
+            <span class="detail-value" id="modal-email" style="word-break:break-all;font-size:.875rem;"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Nascimento</span>
+            <span class="detail-value" id="modal-nascimento"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Cadastrado em</span>
+            <span class="detail-value" id="modal-created"></span>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid rgba(255,255,255,.07);padding-top:20px;margin-top:4px;">
+          <div style="font-size:.8125rem;font-weight:600;color:var(--gray-300);text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;">Ações</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;" id="modal-actions">
+            <!-- Preenchido dinamicamente -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container"></div>
+
+  <script type="module">
+    import { requireAdmin, openModal, closeModal, initModalClose, toast } from './js/ui.js';
+    import { logout } from './js/auth.js';
+    import { supabase } from './js/supabase.js';
+    import { getSession } from './js/cookies.js';
+    import { getInitials, formatDate, formatCPF, sanitize, debounce } from './js/utils.js';
+
+    // ── GUARD: apenas admin ──────────────────
+    const session = await requireAdmin('dashboard.html');
+    if (!session) throw new Error('Acesso negado');
+
+    const myUserId = session.userId;
+
+    // UI
+    document.getElementById('sidebar-name').textContent = session.name || 'Admin';
+    document.getElementById('sidebar-avatar').textContent = getInitials(session.name || 'A');
+
+    // ── NAVEGAÇÃO ────────────────────────────
+    const sections = { overview: 'section-overview', users: 'section-users', logs: 'section-logs' };
+    const navLinks = { overview: 'nav-overview', users: 'nav-users', logs: 'nav-logs' };
+
+    function showSection(name) {
+      Object.values(sections).forEach(id => document.getElementById(id).style.display = 'none');
+      Object.values(navLinks).forEach(id => document.getElementById(id).classList.remove('active'));
+      document.getElementById(sections[name]).style.display = 'block';
+      document.getElementById(navLinks[name]).classList.add('active');
+    }
+
+    document.getElementById('nav-overview').addEventListener('click', () => showSection('overview'));
+    document.getElementById('nav-users').addEventListener('click', () => { showSection('users'); loadUsers(); });
+    document.getElementById('nav-logs').addEventListener('click', () => { showSection('logs'); renderLogs(); });
+    document.getElementById('go-users-btn').addEventListener('click', () => { showSection('users'); loadUsers(); });
+
+    // ── LOGOUT ───────────────────────────────
+    document.getElementById('logout-btn').addEventListener('click', async () => await logout());
+
+    // ── STATS ────────────────────────────────
+    async function loadStats() {
+      const { data: all } = await supabase.from('profiles').select('role, created_at');
+      if (!all) return;
+
+      const total = all.length;
+      const admins = all.filter(u => u.role === 'admin').length;
+      const users = total - admins;
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const newUsers = all.filter(u => u.created_at >= thirtyDaysAgo).length;
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-new').textContent = newUsers;
+      document.getElementById('stat-admins').textContent = admins;
+      document.getElementById('stat-users').textContent = users;
+
+      // Bars
+      if (total > 0) {
+        const userPct = Math.round((users / total) * 100);
+        const adminPct = 100 - userPct;
+        document.getElementById('bar-user').style.width = userPct + '%';
+        document.getElementById('bar-admin').style.width = adminPct + '%';
+        document.getElementById('bar-user-pct').textContent = `${users} (${userPct}%)`;
+        document.getElementById('bar-admin-pct').textContent = `${admins} (${adminPct}%)`;
+      }
+    }
+
+    // ── RECENT USERS ─────────────────────────
+    async function loadRecentUsers() {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (!data || !data.length) {
+        document.getElementById('recent-users-list').innerHTML = '<div class="empty-state"><p>Nenhum usuário cadastrado.</p></div>';
+        return;
+      }
+
+      document.getElementById('recent-users-list').innerHTML = data.map(u => `
+        <div class="delivery-item">
+          <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">
+            ${sanitize(getInitials(u.nome))}
+          </div>
+          <div class="delivery-info">
+            <div class="delivery-code">${sanitize(u.nome)}</div>
+            <div class="delivery-dest">${sanitize(u.email)}</div>
+          </div>
+          <div class="delivery-meta">
+            <span class="badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}">${u.role === 'admin' ? '👑 Admin' : 'Usuário'}</span>
+            <div class="delivery-date" style="margin-top:4px;">${formatDate(u.created_at?.split('T')[0])}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ── USERS TABLE ──────────────────────────
+    const PAGE_SIZE = 10;
+    let allUsers = [];
+    let filtered = [];
+    let currentPage = 1;
+
+    async function loadUsers() {
+      const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+      allUsers = data || [];
+      applyFilter();
+    }
+
+    function applyFilter() {
+      const q = document.getElementById('search-input').value.toLowerCase();
+      const role = document.getElementById('role-filter').value;
+      filtered = allUsers.filter(u => {
+        const matchQ = !q || u.nome?.toLowerCase().includes(q) || u.cpf?.includes(q.replace(/\D/g,'')) || u.email?.toLowerCase().includes(q);
+        const matchRole = !role || u.role === role;
+        return matchQ && matchRole;
+      });
+      currentPage = 1;
+      renderTable();
+    }
+
+    function renderTable() {
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const page = filtered.slice(start, start + PAGE_SIZE);
+
+      document.getElementById('users-count-label').textContent = `${filtered.length} usuário(s) encontrado(s)`;
+
+      const tbody = document.getElementById('users-tbody');
+      if (!page.length) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-users"></i><h3>Nenhum usuário encontrado</h3><p>Tente outro filtro de busca.</p></div></td></tr>`;
+        document.getElementById('pagination').style.display = 'none';
+        return;
+      }
+
+      tbody.innerHTML = page.map(u => `
+        <tr data-cpf="${u.cpf}" style="cursor:pointer;">
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--blue-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">
+                ${sanitize(getInitials(u.nome))}
+              </div>
+              <div>
+                <div style="font-weight:600;font-size:.9rem;">${sanitize(u.nome)}</div>
+                <div style="font-size:.8rem;color:var(--gray-300);">${sanitize(u.email)}</div>
+              </div>
+            </div>
+          </td>
+          <td style="font-family:monospace;font-size:.875rem;color:var(--gray-300);">${sanitize(formatCPF(u.cpf))}</td>
+          <td style="font-size:.875rem;color:var(--gray-300);">${formatDate(u.nascimento)}</td>
+          <td><span class="badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}">${u.role === 'admin' ? '👑 Admin' : '👤 Usuário'}</span></td>
+          <td style="font-size:.8125rem;color:var(--gray-300);">${formatDate(u.created_at?.split('T')[0])}</td>
+          <td>
+            <button class="btn btn-ghost btn-sm view-btn" data-cpf="${u.cpf}">
+              <i class="fas fa-eye"></i> Ver
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      // Eventos de linhas e botões
+      tbody.querySelectorAll('tr[data-cpf]').forEach(tr => {
+        tr.addEventListener('click', (e) => {
+          if (!e.target.closest('.view-btn')) openUserModal(tr.dataset.cpf);
+        });
+      });
+      tbody.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => { e.stopPropagation(); openUserModal(btn.dataset.cpf); });
+      });
+
+      renderPagination();
+    }
+
+    function renderPagination() {
+      const total = filtered.length;
+      const pages = Math.ceil(total / PAGE_SIZE);
+      const start = (currentPage - 1) * PAGE_SIZE + 1;
+      const end = Math.min(currentPage * PAGE_SIZE, total);
+
+      document.getElementById('pagination').style.display = total ? 'flex' : 'none';
+      document.getElementById('pagination-info').textContent = `Mostrando ${start}–${end} de ${total}`;
+
+      const btns = document.getElementById('pagination-btns');
+      btns.innerHTML = '';
+
+      const prev = document.createElement('button');
+      prev.className = 'page-btn';
+      prev.innerHTML = '<i class="fas fa-chevron-left"></i>';
+      prev.disabled = currentPage === 1;
+      prev.addEventListener('click', () => { currentPage--; renderTable(); });
+      btns.appendChild(prev);
+
+      for (let i = 1; i <= pages; i++) {
+        if (pages > 7 && i > 2 && i < pages - 1 && Math.abs(i - currentPage) > 1) {
+          if (btns.lastChild?.textContent !== '…') {
+            const dots = document.createElement('button');
+            dots.className = 'page-btn';
+            dots.textContent = '…';
+            dots.disabled = true;
+            btns.appendChild(dots);
+          }
+          continue;
+        }
+        const btn = document.createElement('button');
+        btn.className = `page-btn${i === currentPage ? ' active' : ''}`;
+        btn.textContent = i;
+        btn.addEventListener('click', () => { currentPage = i; renderTable(); });
+        btns.appendChild(btn);
+      }
+
+      const next = document.createElement('button');
+      next.className = 'page-btn';
+      next.innerHTML = '<i class="fas fa-chevron-right"></i>';
+      next.disabled = currentPage === pages;
+      next.addEventListener('click', () => { currentPage++; renderTable(); });
+      btns.appendChild(next);
+    }
+
+    // Busca com debounce
+    document.getElementById('search-input').addEventListener('input', debounce(applyFilter, 250));
+    document.getElementById('role-filter').addEventListener('change', applyFilter);
+
+    // ── MODAL USUÁRIO ────────────────────────
+    let selectedUser = null;
+
+    async function openUserModal(cpf) {
+      selectedUser = allUsers.find(u => u.cpf === cpf);
+      if (!selectedUser) return;
+      const u = selectedUser;
+
+      document.getElementById('modal-avatar').textContent = getInitials(u.nome);
+      document.getElementById('modal-avatar').style.background =
+        u.role === 'admin'
+          ? 'linear-gradient(135deg,var(--orange-dim),var(--orange))'
+          : 'linear-gradient(135deg,var(--blue),var(--blue-light))';
+
+      document.getElementById('modal-name').textContent = sanitize(u.nome);
+      document.getElementById('modal-badge').innerHTML =
+        `<span class="badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}">${u.role === 'admin' ? '👑 Administrador' : '👤 Usuário'}</span>`;
+      document.getElementById('modal-cpf').textContent = formatCPF(u.cpf);
+      document.getElementById('modal-email').textContent = sanitize(u.email);
+      document.getElementById('modal-nascimento').textContent = formatDate(u.nascimento);
+      document.getElementById('modal-created').textContent = formatDate(u.created_at?.split('T')[0]);
+
+      // Ações — não mostrar para si mesmo
+      const isSelf = u.user_id === myUserId;
+      const actionsEl = document.getElementById('modal-actions');
+      actionsEl.innerHTML = '';
+
+      if (!isSelf) {
+        // Promover / rebaixar
+        const roleBtn = document.createElement('button');
+        roleBtn.className = `btn btn-sm ${u.role === 'admin' ? 'btn-ghost' : 'btn-orange'}`;
+        roleBtn.innerHTML = u.role === 'admin'
+          ? '<i class="fas fa-arrow-down"></i> Rebaixar para usuário'
+          : '<i class="fas fa-arrow-up"></i> Promover a admin';
+        roleBtn.addEventListener('click', () => toggleRole(u));
+        actionsEl.appendChild(roleBtn);
+      } else {
+        const selfNote = document.createElement('span');
+        selfNote.style.cssText = 'font-size:.8125rem;color:var(--gray-500);font-style:italic;';
+        selfNote.textContent = 'Você não pode alterar seu próprio perfil aqui.';
+        actionsEl.appendChild(selfNote);
+      }
+
+      openModal('user-modal');
+    }
+
+    async function toggleRole(user) {
+      const newRole = user.role === 'admin' ? 'user' : 'admin';
+      const { error } = await supabase
+        .from('profiles')
+        .update({ role: newRole })
+        .eq('cpf', user.cpf);
+
+      if (error) {
+        toast('Erro ao alterar papel do usuário.', 'error');
+        return;
+      }
+
+      // Atualizar local
+      const idx = allUsers.findIndex(u => u.cpf === user.cpf);
+      if (idx !== -1) allUsers[idx].role = newRole;
+
+      toast(`Papel alterado para "${newRole}" com sucesso!`, 'success');
+      closeModal('user-modal');
+      applyFilter();
+      loadStats();
+    }
+
+    // ── LOGS MOCK ────────────────────────────
+    function renderLogs() {
+      const logs = [
+        { icon: '🔑', msg: 'Login realizado', detail: 'admin@logitrack.com.br', time: 'Agora', color: 'var(--blue-light)' },
+        { icon: '👤', msg: 'Novo usuário cadastrado', detail: 'joao.silva@email.com', time: '3 min', color: 'var(--success)' },
+        { icon: '⬆️', msg: 'Papel alterado para admin', detail: 'maria@email.com', time: '12 min', color: 'var(--orange)' },
+        { icon: '📦', msg: 'Carga LT-0592 atualizada', detail: 'Status: Em trânsito', time: '1h', color: 'var(--gray-300)' },
+        { icon: '🔑', msg: 'Login realizado', detail: 'carlos@email.com', time: '2h', color: 'var(--blue-light)' },
+        { icon: '❌', msg: 'Tentativa de login falhou', detail: 'CPF/senha incorretos', time: '3h', color: 'var(--danger)' },
+      ];
+      document.getElementById('logs-list').innerHTML = logs.map(l => `
+        <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);">
+          <div style="width:38px;height:38px;background:rgba(255,255,255,.04);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${l.icon}</div>
+          <div style="flex:1;">
+            <div style="font-size:.9rem;font-weight:600;">${l.msg}</div>
+            <div style="font-size:.8rem;color:var(--gray-300);">${sanitize(l.detail)}</div>
+          </div>
+          <div style="font-size:.8rem;color:var(--gray-500);white-space:nowrap;">${l.time} atrás</div>
+        </div>
+      `).join('');
+    }
+
+    // ── INIT ─────────────────────────────────
+    initModalClose();
+    await Promise.all([loadStats(), loadRecentUsers()]);
+  </script>
+</body>
+</html>

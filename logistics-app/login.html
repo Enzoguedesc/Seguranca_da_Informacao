@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — LogiTrack</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="auth-layout" style="position:relative;z-index:1;">
+
+    <!-- Visual Side -->
+    <div class="auth-visual">
+      <div class="auth-visual-content">
+        <div class="auth-brand">
+          <div class="auth-brand-icon">🚚</div>
+          <span class="auth-brand-name">LogiTrack</span>
+        </div>
+        <h2 class="auth-tagline">
+          Bem-vindo de<br>volta à sua<br><span class="accent">operação.</span>
+        </h2>
+        <p class="auth-desc">
+          Acesse sua conta para visualizar rastreamentos, relatórios
+          e gerenciar todas as suas operações logísticas.
+        </p>
+        <div class="auth-stats">
+          <div class="stat-item">
+            <span class="stat-val">12k+</span>
+            <span class="stat-label">Entregas/mês</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-val">99.9%</span>
+            <span class="stat-label">Uptime</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-val">48h</span>
+            <span class="stat-label">Prazo médio</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating cards decorativos -->
+      <div class="floating-card floating-card-1">
+        <div class="fc-icon green"><i class="fas fa-check"></i></div>
+        <div class="fc-text">
+          <div class="fc-title">Entrega confirmada</div>
+          <div class="fc-sub">São Paulo → Rio de Janeiro</div>
+        </div>
+      </div>
+      <div class="floating-card floating-card-2">
+        <div class="fc-icon orange"><i class="fas fa-truck"></i></div>
+        <div class="fc-text">
+          <div class="fc-title">Em trânsito</div>
+          <div class="fc-sub">42 volumes · ETA 2h</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Panel -->
+    <div class="auth-form-panel">
+      <div style="max-width: 420px; width: 100%; margin: 0 auto;">
+
+        <div class="auth-form-header">
+          <h1>Entrar na sua conta</h1>
+          <p>Não tem conta? <a href="register.html">Criar cadastro</a></p>
+        </div>
+
+        <!-- Mensagem de sucesso do cadastro -->
+        <div id="success-msg" style="display:none; background:rgba(16,185,129,.1); border:1px solid rgba(16,185,129,.25); border-radius:var(--radius-md); padding:12px 16px; margin-bottom:20px; color:var(--success); font-size:.875rem;">
+          ✅ Cadastro realizado! Faça login para continuar.
+        </div>
+
+        <form id="login-form" class="auth-form" novalidate>
+
+          <!-- Identificador -->
+          <div class="form-group">
+            <label class="form-label" for="identifier">CPF ou E-mail</label>
+            <div class="input-wrap">
+              <i class="fas fa-user input-icon"></i>
+              <input
+                type="text"
+                id="identifier"
+                class="form-input has-icon"
+                placeholder="000.000.000-00 ou email@exemplo.com"
+                autocomplete="username"
+                required
+              >
+            </div>
+            <span class="form-error" id="identifier-error"></span>
+          </div>
+
+          <!-- Senha -->
+          <div class="form-group">
+            <label class="form-label" for="password">Senha</label>
+            <div class="input-wrap">
+              <i class="fas fa-lock input-icon"></i>
+              <input
+                type="password"
+                id="password"
+                class="form-input has-icon"
+                placeholder="Sua senha"
+                autocomplete="current-password"
+                style="padding-right: 44px;"
+                required
+              >
+              <button type="button" class="toggle-password" id="toggle-pwd" aria-label="Mostrar senha">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <span class="form-error" id="password-error"></span>
+          </div>
+
+          <!-- CAPTCHA -->
+          <div class="form-group">
+            <label class="form-label">Verificação</label>
+            <div style="background:rgba(255,255,255,.03); border:1.5px solid rgba(255,255,255,.08); border-radius:var(--radius-md); padding:16px 18px;" id="captcha-container">
+              <div style="font-size:.875rem; color:var(--gray-300); margin-bottom:10px;">
+                Resolva o cálculo para confirmar que você não é um robô:
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <span id="captcha-question" style="font-size:1.125rem; font-weight:700; color:var(--white); background:rgba(26,86,219,.15); border:1px solid rgba(26,86,219,.25); border-radius:var(--radius-sm); padding:8px 16px;"></span>
+                <span style="color:var(--gray-300);">=</span>
+                <input
+                  type="number"
+                  id="captcha-input"
+                  class="captcha-input"
+                  placeholder="?"
+                  min="0"
+                  autocomplete="off"
+                >
+                <button type="button" id="captcha-refresh" style="background:none; color:var(--gray-500); font-size:14px; padding:4px 8px; transition: color .2s;" title="Novo cálculo">
+                  <i class="fas fa-rotate"></i>
+                </button>
+              </div>
+              <div id="captcha-status" style="font-size:.8rem; margin-top:8px; display:none;"></div>
+            </div>
+          </div>
+
+          <!-- Erro global -->
+          <div id="global-error" style="display:none; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.25); border-radius:var(--radius-md); padding:12px 16px; color:var(--danger); font-size:.875rem; font-weight:600; text-align:center;">
+          </div>
+
+          <button type="submit" class="btn btn-primary w-full btn-lg" id="submit-btn" style="margin-top:4px;">
+            <i class="fas fa-arrow-right-to-bracket"></i>
+            Entrar
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { login } from './js/auth.js';
+    import { redirectIfLoggedIn } from './js/ui.js';
+    import { isCPF, formatCPF, validateEmail, generateCaptcha } from './js/utils.js';
+
+    // Redirecionar se já logado
+    redirectIfLoggedIn();
+
+    // Mostrar mensagem de sucesso do cadastro
+    if (sessionStorage.getItem('registered') === '1') {
+      document.getElementById('success-msg').style.display = 'block';
+      sessionStorage.removeItem('registered');
+    }
+
+    // ── CAPTCHA ──────────────────────────────
+    let captcha = null;
+    let captchaVerified = false;
+
+    function refreshCaptcha() {
+      captcha = generateCaptcha();
+      captchaVerified = false;
+      document.getElementById('captcha-question').textContent = captcha.question;
+      document.getElementById('captcha-input').value = '';
+      const status = document.getElementById('captcha-status');
+      status.style.display = 'none';
+      document.getElementById('captcha-container').style.borderColor = 'rgba(255,255,255,.08)';
+    }
+    refreshCaptcha();
+
+    document.getElementById('captcha-refresh').addEventListener('click', refreshCaptcha);
+
+    document.getElementById('captcha-input').addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      const status = document.getElementById('captcha-status');
+      const container = document.getElementById('captcha-container');
+      if (!isNaN(val)) {
+        if (val === captcha.answer) {
+          captchaVerified = true;
+          status.textContent = '✓ Verificado!';
+          status.style.color = 'var(--success)';
+          status.style.display = 'block';
+          container.style.borderColor = 'var(--success)';
+        } else {
+          captchaVerified = false;
+          status.textContent = '';
+          status.style.display = 'none';
+          container.style.borderColor = 'rgba(255,255,255,.08)';
+        }
+      }
+    });
+
+    // ── CPF MASK ─────────────────────────────
+    const identifierInput = document.getElementById('identifier');
+    identifierInput.addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (/^\d/.test(val.replace(/\D/g, '')) && val.replace(/\D/g, '').length <= 11) {
+        e.target.value = formatCPF(val);
+      }
+    });
+
+    // ── TOGGLE PASSWORD ───────────────────────
+    document.getElementById('toggle-pwd').addEventListener('click', () => {
+      const pwd = document.getElementById('password');
+      const icon = document.querySelector('#toggle-pwd i');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        pwd.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    });
+
+    // ── SUBMIT ────────────────────────────────
+    const form = document.getElementById('login-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const globalError = document.getElementById('global-error');
+
+    function showError(msg) {
+      globalError.textContent = msg;
+      globalError.style.display = 'block';
+    }
+    function hideError() {
+      globalError.style.display = 'none';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+
+      const identifier = identifierInput.value.trim();
+      const password = document.getElementById('password').value;
+
+      // Validações client-side
+      if (!identifier) { showError('Informe seu CPF ou e-mail.'); return; }
+      if (!password)    { showError('Informe sua senha.'); return; }
+      if (!captchaVerified) { showError('Resolva o desafio de verificação primeiro.'); return; }
+
+      // Loading
+      const original = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="spinner"></div><span>Entrando...</span>';
+
+      const result = await login({ identifier, password });
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = original;
+
+      if (!result.success) {
+        showError(result.error);
+        refreshCaptcha(); // Novo captcha após falha
+        return;
+      }
+
+      // Redirecionar
+      window.location.href = result.role === 'admin' ? 'admin.html' : 'dashboard.html';
+    });
+  </script>
+</body>
+</html>

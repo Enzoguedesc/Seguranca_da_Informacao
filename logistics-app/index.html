@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogiTrack — Gestão Logística</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="page-wrap">
+    <nav class="navbar">
+      <div class="nav-logo">
+        <div class="logo-icon">🚚</div>
+        LogiTrack
+      </div>
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-ghost btn-sm">Entrar</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Cadastrar</a>
+      </div>
+    </nav>
+
+    <section class="landing-hero">
+      <div class="hero-badge">
+        <i class="fas fa-truck-fast"></i>
+        Plataforma de Gestão Logística
+      </div>
+
+      <h1 class="hero-title">
+        Sua logística,<br>
+        <span class="accent">inteligente</span> e conectada
+      </h1>
+
+      <p class="hero-desc">
+        Rastreie cargas, gerencie rotas e monitore entregas em tempo real.
+        Uma plataforma completa para sua operação logística.
+      </p>
+
+      <div class="hero-actions">
+        <a href="register.html" class="btn btn-primary btn-lg">
+          <i class="fas fa-rocket"></i>
+          Começar agora
+        </a>
+        <a href="login.html" class="btn btn-ghost btn-lg">
+          Já tenho conta
+        </a>
+      </div>
+
+      <!-- Feature cards -->
+      <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:16px; max-width:800px; margin-top:80px; width:100%;">
+        <div class="card" style="text-align:left;">
+          <div style="font-size:28px; margin-bottom:12px;">📦</div>
+          <div style="font-weight:700; margin-bottom:6px;">Rastreamento</div>
+          <div style="font-size:.875rem; color:var(--gray-300);">Acompanhe suas cargas em tempo real com atualizações automáticas.</div>
+        </div>
+        <div class="card" style="text-align:left;">
+          <div style="font-size:28px; margin-bottom:12px;">🗺️</div>
+          <div style="font-weight:700; margin-bottom:6px;">Rotas</div>
+          <div style="font-size:.875rem; color:var(--gray-300);">Otimize rotas e reduza custos operacionais com análise inteligente.</div>
+        </div>
+        <div class="card" style="text-align:left;">
+          <div style="font-size:28px; margin-bottom:12px;">📊</div>
+          <div style="font-weight:700; margin-bottom:6px;">Relatórios</div>
+          <div style="font-size:.875rem; color:var(--gray-300);">Dashboards completos com métricas de desempenho em tempo real.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { hasSession, getSession } from './js/cookies.js';
+    // Redirecionar se já logado
+    if (hasSession()) {
+      const s = getSession();
+      window.location.href = s?.role === 'admin' ? 'admin.html' : 'dashboard.html';
+    }
+  </script>
+</body>
+</html>
